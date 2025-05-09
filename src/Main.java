@@ -6,7 +6,5 @@ import Presentacion.Vistas.VentanaPrin;
 public class Main {
     public static void main(String[] args) {
      VentanaPrin v = new VentanaPrin();
-        InicializarDatabase d = new InicializarDatabase();
-        d.cargarDatos();
     }
 }
