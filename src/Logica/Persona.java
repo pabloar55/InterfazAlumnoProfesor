@@ -15,6 +15,10 @@ public class Persona {
         this.rol= rol;
     }
 
+    public Persona(String dni) {
+        this.dni = dni;
+    }
+
     public String getRol() {
         return rol;
     }

@@ -5,8 +5,10 @@ import Persistencia.InicializarDatabase;
 import Presentacion.Vistas.VentanaPrin;
 import Presentacion.Vistas.VentanaSecun;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ContrVentPrin {
@@ -36,6 +38,25 @@ public class ContrVentPrin {
             @Override
             public void actionPerformed(ActionEvent e) {
                 VentanaSecun vs = new VentanaSecun(ContrVentPrin.this);
+            }
+        });
+        v.getBorrar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int fila = v.getTabla().getSelectedRow();
+                if (fila==-1){
+                    JOptionPane.showMessageDialog(v, "No has seleccionado ninguna fila");
+                    return;
+                }
+                String dni = v.getModelo().getValueAt(fila, 0).toString();
+                try {
+                    db.borrarPersonaDB(dni);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(v, "No se pudo borrar el nombre", "Error en la base de datos", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                v.getModelo().removeRow(fila);
             }
         });
     }

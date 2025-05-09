@@ -33,9 +33,9 @@ public class InicializarDatabase {
             c = DriverManager.getConnection(URL, user, password);
             Statement stmt = c.createStatement();
             stmt.executeUpdate(crearDB);
-            URL=URL+"prog_alumnoProfe";
+            URL = URL + "prog_alumnoProfe";
             c = DriverManager.getConnection(URL, user, password);
-            stmt= c.createStatement();
+            stmt = c.createStatement();
             stmt.executeUpdate(crearTablaPersonas);
             stmt.executeUpdate(crearTablaAlumnos);
             stmt.executeUpdate(crearTablaProfesores);
@@ -69,6 +69,7 @@ public class InicializarDatabase {
         }
         return personas;
     }
+
     public void aniadirPersonaDB(Persona p) {
         try {
             Connection connection = DriverManager.getConnection(URL, "root", "");
@@ -91,5 +92,12 @@ public class InicializarDatabase {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void borrarPersonaDB(String dni) throws SQLException {
+        Connection c = DriverManager.getConnection(URL, user, password);
+        PreparedStatement st = c.prepareStatement("delete from personas where dni=?");
+        st.setString(1, dni);
+        st.executeUpdate();
     }
 }
