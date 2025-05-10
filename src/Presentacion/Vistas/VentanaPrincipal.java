@@ -1,15 +1,14 @@
 package Presentacion.Vistas;
 
 import Persistencia.InicializarDatabase;
-import Presentacion.Controladores.ContrVentPrin;
+import Presentacion.Controladores.ContrVentPrincipal;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 
-public class VentanaPrin extends JFrame {
+public class VentanaPrincipal extends JFrame {
     private JTable tabla;
     private DefaultTableModel modelo;
     private JPanel panel;
@@ -18,7 +17,7 @@ public class VentanaPrin extends JFrame {
     private JButton aniadir;
     private JButton borrar;
 
-    public VentanaPrin() {
+    public VentanaPrincipal() {
         modelo = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -35,8 +34,8 @@ public class VentanaPrin extends JFrame {
         panelTabla.add(scrollPane, BorderLayout.CENTER);
         panel = new JPanel();
         panel.add(panelTabla, BorderLayout.CENTER);
-        aniadir = new JButton("Añadir");
-        borrar = new JButton("Borrar");
+        aniadir = new JButton("Añadir persona");
+        borrar = new JButton("Borrar selección");
         panelBotones = new JPanel();
         panelBotones.add(aniadir);
         panelBotones.add(borrar);
@@ -45,7 +44,8 @@ public class VentanaPrin extends JFrame {
         setSize(500, 520);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        ContrVentPrin c = new ContrVentPrin(this, new InicializarDatabase());
+        setTitle("Gestor colegio");
+        ContrVentPrincipal c = new ContrVentPrincipal(this, new InicializarDatabase());
         setVisible(true);
     }
 

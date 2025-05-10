@@ -15,8 +15,15 @@ public class Persona {
         this.rol= rol;
     }
 
-    public Persona(String dni) {
+    public Persona(String dni, String nombre, String apellido, String telefono) {
         this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public String getRol() {
@@ -37,5 +44,16 @@ public class Persona {
 
     public String getTelefono() {
         return telefono;
+    }
+
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "dni='" + dni + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", rol='" + rol + '\'' +
+                '}';
     }
 }

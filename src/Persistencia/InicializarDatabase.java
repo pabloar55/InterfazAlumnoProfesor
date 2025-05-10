@@ -9,23 +9,23 @@ public class InicializarDatabase {
     private String URL = "jdbc:mariadb://localhost:3306/";
     private String user = "root";
     private String password = "";
-    private String crearDB = "create database if not exists prog_alumnoProfe";
+    private String crearDB = "create database if not exists colegio";
     private String crearTablaPersonas = "create table if not exists personas (dni varchar(9) primary key ,\n" +
             "            nombre varchar(30), apellido varchar(30), telefono varchar(12));";
     private String crearTablaAlumnos = "create table if not exists alumnos(id_alumn int primary key auto_increment,\n" +
-            "                                               dni varchar(9) not null,\n" +
+            "                                               dni varchar(9) not null unique,\n" +
             "                foreign key fk_alumn (dni) references personas(dni) on delete cascade);";
     private String crearTablaProfesores = "create table if not exists profesores(id_prof int primary key auto_increment,\n" +
-            "                                         dni varchar(9) not null,\n" +
+            "                                         dni varchar(9) not null unique,\n" +
             "                                           foreign key fk_prof (dni) references personas(dni) on delete cascade);";
     private ArrayList<Persona> personas;
-    private String consultaPersonas = "select p.dni, p.nombre, p.apellido, p.telefono, 'profesor'\n" +
+    private String consultaPersonas = "select p.dni, p.nombre, p.apellido, p.telefono,\n" +
+            "       case when pr.dni is not null and a.dni is not null then 'ProfesorAlumno'\n" +
+            "        when pr.dni is not null then 'Profesor'\n" +
+            "        when a.dni is not null then 'Alumno' end as 'rol'\n" +
             "from personas p\n" +
-            "         join profesores pr on pr.dni= p.dni\n" +
-            "union\n" +
-            "select p.dni, p.nombre, p.apellido, p.telefono, 'alumno'\n" +
-            "from personas p\n" +
-            "         join alumnos a on a.dni=p.dni;";
+            " left join profesores pr on pr.dni = p.dni\n" +
+            "left  join alumnos a on a.dni = p.dni;";
 
     public InicializarDatabase() {
         Connection c = null;
@@ -33,7 +33,7 @@ public class InicializarDatabase {
             c = DriverManager.getConnection(URL, user, password);
             Statement stmt = c.createStatement();
             stmt.executeUpdate(crearDB);
-            URL = URL + "prog_alumnoProfe";
+            URL = URL + "colegio";
             c = DriverManager.getConnection(URL, user, password);
             stmt = c.createStatement();
             stmt.executeUpdate(crearTablaPersonas);
@@ -44,54 +44,58 @@ public class InicializarDatabase {
         }
     }
 
-    public ArrayList<Persona> cargarDatos() {
+    public ArrayList<Persona> cargarDatos() throws SQLException {
         personas = new ArrayList<>();
         Connection c = null;
-        try {
-            c = DriverManager.getConnection(URL, user, password);
-            Statement stmt = c.createStatement();
-            stmt.executeQuery(consultaPersonas);
-            ResultSet rs = stmt.getResultSet();
-            while (rs.next()) {
-                if (rs.getString(5).equals("alumno")) {
-                    Persona a = new Persona(rs.getString(1), rs.getString(2),
-                            rs.getString(3), rs.getString(4), rs.getString(5));
-                    personas.add(a);
-                }
-                if (rs.getString(5).equals("profesor")) {
-                    Persona p = new Persona(rs.getString(1), rs.getString(2),
-                            rs.getString(3), rs.getString(4), rs.getString(5));
-                    personas.add(p);
-                }
+        c = DriverManager.getConnection(URL, user, password);
+        Statement stmt = c.createStatement();
+        stmt.executeQuery(consultaPersonas);
+        ResultSet rs = stmt.getResultSet();
+        while (rs.next()) {
+            if (rs.getString(5).equals("ProfesorAlumno")) {
+                Persona a = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(a);
+            }else if (rs.getString(5).equals("Alumno")) {
+                Persona a = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(a);
+            } else if (rs.getString(5).equals("Profesor")) {
+                Persona p = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(p);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
         return personas;
     }
 
-    public void aniadirPersonaDB(Persona p) {
-        try {
-            Connection connection = DriverManager.getConnection(URL, "root", "");
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into personas (dni, nombre, apellido, telefono) values (?, ?, ?,?)");
-            preparedStatement.setString(1, p.getDni());
-            preparedStatement.setString(2, p.getNombre());
-            preparedStatement.setString(3, p.getApellido());
-            preparedStatement.setString(4, p.getTelefono());
-            preparedStatement.executeUpdate();
-            if (p.getRol().equals("alumno")) {
-                preparedStatement = connection.prepareStatement("insert into alumnos (dni) values (?)");
-                preparedStatement.setString(1, p.getDni());
-                preparedStatement.executeUpdate();
-            }
-            if (p.getRol().equals("profesor")) {
-                preparedStatement = connection.prepareStatement("insert into profesores (dni) values (?)");
-                preparedStatement.setString(1, p.getDni());
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    public void aniadirPersonaDB(Persona p) throws SQLException {
+        Connection connection = DriverManager.getConnection(URL, "root", "");
+        PreparedStatement stmt = connection.prepareStatement("insert into personas (dni, nombre, apellido, telefono) values (?, ?, ?,?)");
+        stmt.setString(1, p.getDni());
+        stmt.setString(2, p.getNombre());
+        stmt.setString(3, p.getApellido());
+        stmt.setString(4, p.getTelefono());
+        stmt.executeUpdate();
+        if (p.getRol().equals("Alumno")) {
+            stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
+            stmt.setString(1, p.getDni());
+            stmt.executeUpdate();
         }
+        if (p.getRol().equals("Profesor")) {
+            stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
+            stmt.setString(1, p.getDni());
+            stmt.executeUpdate();
+        }
+        if (p.getRol().equals("ProfesorAlumno")) {
+            stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
+            stmt.setString(1, p.getDni());
+            stmt.executeUpdate();
+            stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
+            stmt.setString(1, p.getDni());
+            stmt.executeUpdate();
+        }
+
     }
 
     public void borrarPersonaDB(String dni) throws SQLException {
@@ -99,5 +103,57 @@ public class InicializarDatabase {
         PreparedStatement st = c.prepareStatement("delete from personas where dni=?");
         st.setString(1, dni);
         st.executeUpdate();
+    }
+
+    public void modificarPersonaDB(Persona personaNueva, Persona personaAntigua) throws SQLException {
+        Connection connection = DriverManager.getConnection(URL, user, password);
+        PreparedStatement stmt = connection.prepareStatement("update personas  set nombre=?,  apellido=?, telefono=? where dni= ?");
+        stmt.setString(1, personaNueva.getNombre());
+        stmt.setString(2, personaNueva.getApellido());
+        stmt.setString(3, personaNueva.getTelefono());
+        stmt.setString(4, personaNueva.getDni());
+        stmt.executeUpdate();
+        if (personaAntigua.getRol().equals("ProfesorAlumno") && personaNueva.getRol().equals("Alumno")) {
+            stmt = connection.prepareStatement("delete from profesores where dni=?");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
+        if (personaAntigua.getRol().equals("ProfesorAlumno") && personaNueva.getRol().equals("Profesor")) {
+            stmt = connection.prepareStatement("delete from alumnos where dni=?");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
+        if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("Alumno")) {
+            stmt = connection.prepareStatement("delete from profesores where dni=?");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
+        if (personaAntigua.getRol().equals("Alumno") && personaNueva.getRol().equals("Profesor")) {
+            stmt = connection.prepareStatement("delete from alumnos where dni=?");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
+        if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("ProfesorAlumno")) {
+            stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
+        if (personaAntigua.getRol().contains("Alumno") && personaNueva.getRol().equals("ProfesorAlumno")) {
+            stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
+            stmt.setString(1, personaAntigua.getDni());
+            stmt.executeUpdate();
+            return;
+        }
     }
 }
