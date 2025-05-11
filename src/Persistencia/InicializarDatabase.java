@@ -29,22 +29,21 @@ public class InicializarDatabase {
             "left  join alumnos a on a.dni = p.dni;";
 
     public InicializarDatabase() throws SQLException {
-        Connection c = null;
-            c = DriverManager.getConnection(URL, user, password);
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(crearDB);
-            URL = URL + "colegio";
-            c = DriverManager.getConnection(URL, user, password);
-            stmt = c.createStatement();
-            stmt.executeUpdate(crearTablaPersonas);
-            stmt.executeUpdate(crearTablaAlumnos);
-            stmt.executeUpdate(crearTablaProfesores);
+
+        Connection c = DriverManager.getConnection(URL, user, password);
+        Statement stmt = c.createStatement();
+        stmt.executeUpdate(crearDB);
+        URL = URL + "colegio";
+        c = DriverManager.getConnection(URL, user, password);
+        stmt = c.createStatement();
+        stmt.executeUpdate(crearTablaPersonas);
+        stmt.executeUpdate(crearTablaAlumnos);
+        stmt.executeUpdate(crearTablaProfesores);
     }
 
     public ArrayList<Persona> cargarDatos() throws SQLException {
         personas = new ArrayList<>();
-        Connection c = null;
-        c = DriverManager.getConnection(URL, user, password);
+        Connection c = DriverManager.getConnection(URL, user, password);
         Statement stmt = c.createStatement();
         stmt.executeQuery(consultaPersonas);
         ResultSet rs = stmt.getResultSet();
@@ -53,7 +52,7 @@ public class InicializarDatabase {
                 Persona a = new Persona(rs.getString(1), rs.getString(2),
                         rs.getString(3), rs.getString(4), rs.getString(5));
                 personas.add(a);
-            }else if (rs.getString(5).equals("Alumno")) {
+            } else if (rs.getString(5).equals("Alumno")) {
                 Persona a = new Persona(rs.getString(1), rs.getString(2),
                         rs.getString(3), rs.getString(4), rs.getString(5));
                 personas.add(a);
@@ -92,7 +91,6 @@ public class InicializarDatabase {
             stmt.setString(1, p.getDni());
             stmt.executeUpdate();
         }
-
     }
 
     public void borrarPersonaDB(String dni) throws SQLException {
@@ -114,43 +112,33 @@ public class InicializarDatabase {
             stmt = connection.prepareStatement("delete from profesores where dni=?");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
-        }
-        if (personaAntigua.getRol().equals("ProfesorAlumno") && personaNueva.getRol().equals("Profesor")) {
+        } else if (personaAntigua.getRol().equals("ProfesorAlumno") && personaNueva.getRol().equals("Profesor")) {
             stmt = connection.prepareStatement("delete from alumnos where dni=?");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
-        }
-        if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("Alumno")) {
+        } else if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("Alumno")) {
             stmt = connection.prepareStatement("delete from profesores where dni=?");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
             stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
-        }
-        if (personaAntigua.getRol().equals("Alumno") && personaNueva.getRol().equals("Profesor")) {
+        } else if (personaAntigua.getRol().equals("Alumno") && personaNueva.getRol().equals("Profesor")) {
             stmt = connection.prepareStatement("delete from alumnos where dni=?");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
             stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
-        }
-        if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("ProfesorAlumno")) {
+        } else if (personaAntigua.getRol().equals("Profesor") && personaNueva.getRol().equals("ProfesorAlumno")) {
             stmt = connection.prepareStatement("insert into alumnos (dni) values (?)");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
-        }
-        if (personaAntigua.getRol().contains("Alumno") && personaNueva.getRol().equals("ProfesorAlumno")) {
+
+        } else if (personaAntigua.getRol().contains("Alumno") && personaNueva.getRol().equals("ProfesorAlumno")) {
             stmt = connection.prepareStatement("insert into profesores (dni) values (?)");
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
-            return;
         }
     }
 }
