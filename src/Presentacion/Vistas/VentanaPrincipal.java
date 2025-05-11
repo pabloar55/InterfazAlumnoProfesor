@@ -9,6 +9,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.sql.SQLException;
 
+import static java.lang.System.exit;
+
 public class VentanaPrincipal extends JFrame {
     private JTable tabla;
     private DefaultTableModel modelo;
@@ -50,7 +52,7 @@ public class VentanaPrincipal extends JFrame {
             ContrVentPrincipal c = new ContrVentPrincipal(this, new InicializarDatabase());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            exit(0);
         }
         setVisible(true);
     }
