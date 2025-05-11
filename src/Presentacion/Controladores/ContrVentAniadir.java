@@ -31,7 +31,7 @@ public class ContrVentAniadir {
                 try {
                     cp.getDb().aniadirPersonaDB(persona);
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(va, "No se pudo añadir la neuva persona en la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(va, "No se pudo añadir la nueva persona en la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 cp.mostrarPersonaAniadida(persona);
                 va.dispose();

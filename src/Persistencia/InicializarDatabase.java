@@ -2,6 +2,7 @@ package Persistencia;
 
 import Logica.Persona;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -27,9 +28,8 @@ public class InicializarDatabase {
             " left join profesores pr on pr.dni = p.dni\n" +
             "left  join alumnos a on a.dni = p.dni;";
 
-    public InicializarDatabase() {
+    public InicializarDatabase() throws SQLException {
         Connection c = null;
-        try {
             c = DriverManager.getConnection(URL, user, password);
             Statement stmt = c.createStatement();
             stmt.executeUpdate(crearDB);
@@ -39,9 +39,6 @@ public class InicializarDatabase {
             stmt.executeUpdate(crearTablaPersonas);
             stmt.executeUpdate(crearTablaAlumnos);
             stmt.executeUpdate(crearTablaProfesores);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public ArrayList<Persona> cargarDatos() throws SQLException {

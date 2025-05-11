@@ -57,37 +57,37 @@ public class VentanaModificar extends JFrame {
 
     public VentanaModificar(ContrVentPrincipal cp) {
         this.cp = cp;
-        JPanel panelDni = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelDni.add(new JLabel("DNI:"));
+        JPanel panelDni = new JPanel(new BorderLayout());
+        panelDni.add(new JLabel("DNI"), BorderLayout.NORTH);
         filaSelec = cp.getVentanaPrincipal().getTabla().getSelectedRow();
-        textoDni = new JTextField(cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 0).toString(), 8){
+        textoDni = new JTextField(cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 0).toString()){
             @Override
             public boolean isEditable() {
                 return false;
             }
         };
-        panelDni.add(textoDni);
+        panelDni.add(textoDni, BorderLayout.SOUTH);
 
-        JPanel panelNombre = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelNombre.add(new JLabel("Nombre:"));
+        JPanel panelNombre = new JPanel(new BorderLayout());
+        panelNombre.add(new JLabel("Nombre"), BorderLayout.NORTH);
         textoNombre = new JTextField(cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 1).toString(), 8);
-        panelNombre.add(textoNombre);
+        panelNombre.add(textoNombre, BorderLayout.SOUTH);
 
-        JPanel panelApe = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelApe.add(new JLabel("Apellido:"));
+        JPanel panelApe = new JPanel(new BorderLayout());
+        panelApe.add(new JLabel("Apellido"), BorderLayout.NORTH);
         textoApe = new JTextField(cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 2).toString(), 8);
-        panelApe.add(textoApe);
+        panelApe.add(textoApe, BorderLayout.SOUTH);
 
-        JPanel panelTelef = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelTelef.add(new JLabel("Teléfono:"));
+        JPanel panelTelef = new JPanel(new BorderLayout());
+        panelTelef.add(new JLabel("Teléfono"), BorderLayout.NORTH);
         textoTelef = new JTextField(cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 3).toString(), 8);
-        panelTelef.add(textoTelef);
+        panelTelef.add(textoTelef, BorderLayout.SOUTH);
 
         checkProf = new JCheckBox("Profesor");
         checkAlu = new JCheckBox("Alumno");
-        panelCheck = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelCheck.add(checkProf);
-        panelCheck.add(checkAlu);
+        panelCheck = new JPanel(new BorderLayout());
+        panelCheck.add(checkProf, BorderLayout.NORTH);
+        panelCheck.add(checkAlu, BorderLayout.SOUTH);
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(panelDni);

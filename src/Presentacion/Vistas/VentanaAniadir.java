@@ -55,29 +55,33 @@ public class VentanaAniadir extends JFrame {
 
     public VentanaAniadir(ContrVentPrincipal cp) {
         this.cp= cp;
-        JPanel panelDni = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelDni.add(new JLabel("DNI:"));
-        textoDni = new JTextField(8);
-        panelDni.add(textoDni);
-        JPanel panelNombre = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelNombre.add(new JLabel("Nombre:"));
-        textoNombre = new JTextField(8);
-        panelNombre.add(textoNombre);
 
-        JPanel panelApe = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelApe.add(new JLabel("Apellido:"));
-        textoApe = new JTextField(8);
-        panelApe.add(textoApe);
+        JPanel panelDni = new JPanel(new BorderLayout());
+        panelDni.add(new JLabel("DNI"), BorderLayout.NORTH);
+        textoDni = new JTextField();
+        panelDni.add(textoDni, BorderLayout.SOUTH);
 
-        JPanel panelTelef = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelTelef.add(new JLabel("Teléfono:"));
-        textoTelef = new JTextField(8);
-        panelTelef.add(textoTelef);
+        JPanel panelNombre = new JPanel(new BorderLayout());
+        panelNombre.add(new JLabel("Nombre"), BorderLayout.NORTH);
+        textoNombre = new JTextField();
+        panelNombre.add(textoNombre, BorderLayout.SOUTH);
+
+        JPanel panelApe = new JPanel(new BorderLayout());
+        panelApe.add(new JLabel("Apellidos"), BorderLayout.NORTH);
+        textoApe = new JTextField();
+        panelApe.add(textoApe, BorderLayout.SOUTH);
+
+        JPanel panelTelef = new JPanel(new BorderLayout());
+        panelTelef.add(new JLabel("Teléfono"), BorderLayout.NORTH);
+        textoTelef = new JTextField();
+        panelTelef.add(textoTelef, BorderLayout.SOUTH);
+
         checkProf = new JCheckBox("Profesor");
         checkAlu = new JCheckBox("Alumno");
-        panelCheck = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelCheck.add(checkProf);
-        panelCheck.add(checkAlu);
+        panelCheck = new JPanel(new BorderLayout());
+        panelCheck.add(checkProf, BorderLayout.NORTH);
+        panelCheck.add(checkAlu, BorderLayout.SOUTH);
+
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(panelDni);

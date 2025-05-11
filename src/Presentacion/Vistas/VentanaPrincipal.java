@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class VentanaPrincipal extends JFrame {
     private JTable tabla;
@@ -45,7 +46,12 @@ public class VentanaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setTitle("Gestor colegio");
-        ContrVentPrincipal c = new ContrVentPrincipal(this, new InicializarDatabase());
+        try {
+            ContrVentPrincipal c = new ContrVentPrincipal(this, new InicializarDatabase());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         setVisible(true);
     }
 
