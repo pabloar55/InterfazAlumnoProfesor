@@ -58,6 +58,9 @@ public class ContrVentPrincipal {
                     int fila = v.getTabla().rowAtPoint(e.getPoint());
                     VentanaModificar vm = new VentanaModificar(ContrVentPrincipal.this);
                 }
+                if (e.getClickCount() == 1  && v.getTabla().isCellSelected(0,0)) {
+                    System.out.println("affafafaa");
+                }
             }
         });
     }

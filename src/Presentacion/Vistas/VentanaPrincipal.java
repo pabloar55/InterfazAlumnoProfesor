@@ -29,9 +29,7 @@ public class VentanaPrincipal extends JFrame {
         };
         String[] cabeceras = {"DNI", "Nombre", "Apellidos", "Telefono", "Profesor", "Alumno" };
         modelo.setColumnIdentifiers(cabeceras);
-        TableRowSorter<DefaultTableModel> ordenador= new TableRowSorter<>(modelo);
         tabla = new JTable(modelo);
-        tabla.setRowSorter(ordenador);
         JScrollPane scrollPane = new JScrollPane(tabla);
         panelTabla = new JPanel();
         panelTabla.add(scrollPane, BorderLayout.CENTER);

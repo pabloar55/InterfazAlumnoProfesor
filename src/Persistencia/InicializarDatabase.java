@@ -47,22 +47,7 @@ public class InicializarDatabase {
         Statement stmt = c.createStatement();
         stmt.executeQuery(consultaPersonas);
         ResultSet rs = stmt.getResultSet();
-        while (rs.next()) {
-            if (rs.getString(5).equals("ProfesorAlumno")) {
-                Persona a = new Persona(rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4), rs.getString(5));
-                personas.add(a);
-            } else if (rs.getString(5).equals("Alumno")) {
-                Persona a = new Persona(rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4), rs.getString(5));
-                personas.add(a);
-            } else if (rs.getString(5).equals("Profesor")) {
-                Persona p = new Persona(rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4), rs.getString(5));
-                personas.add(p);
-            }
-        }
-        return personas;
+        return cargarArray(rs);
     }
 
     public void aniadirPersonaDB(Persona p) throws SQLException {
@@ -140,5 +125,40 @@ public class InicializarDatabase {
             stmt.setString(1, personaAntigua.getDni());
             stmt.executeUpdate();
         }
+    }
+    public ArrayList<Persona> ordenar(String orden) throws SQLException {
+        personas = new ArrayList<>();
+        Connection c = DriverManager.getConnection(URL, user, password);
+        PreparedStatement stmt = c.prepareStatement("select p.dni, p.nombre, p.apellido, p.telefono,\n" +
+                "       case when pr.dni is not null and a.dni is not null then 'ProfesorAlumno'\n" +
+                "        when pr.dni is not null then 'Profesor'\n" +
+                "        when a.dni is not null then 'Alumno' end as 'rol'\n" +
+                "from personas p\n" +
+                " left join profesores pr on pr.dni = p.dni\n" +
+                "left  join alumnos a on a.dni = p.dni" +
+                "order by ?;");
+        stmt.setString(1, orden);
+        stmt.executeQuery();
+        ResultSet rs = stmt.getResultSet();
+        return cargarArray(rs);
+    }
+    public ArrayList<Persona> cargarArray(ResultSet rs) throws SQLException {
+        ArrayList<Persona> personas = new ArrayList<>();
+        while (rs.next()) {
+            if (rs.getString(5).equals("ProfesorAlumno")) {
+                Persona a = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(a);
+            } else if (rs.getString(5).equals("Alumno")) {
+                Persona a = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(a);
+            } else if (rs.getString(5).equals("Profesor")) {
+                Persona p = new Persona(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getString(4), rs.getString(5));
+                personas.add(p);
+            }
+        }
+        return personas;
     }
 }

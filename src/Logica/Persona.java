@@ -7,6 +7,8 @@ public class Persona {
     private String telefono;
     private String rol;
 
+
+
     public Persona(String dni, String nombre, String apellido, String telefono, String rol) {
         this.dni = dni;
         this.nombre = nombre;

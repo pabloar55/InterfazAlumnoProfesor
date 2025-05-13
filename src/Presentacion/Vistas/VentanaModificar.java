@@ -84,7 +84,14 @@ public class VentanaModificar extends JFrame {
         panelTelef.add(textoTelef, BorderLayout.SOUTH);
 
         checkProf = new JCheckBox("Profesor");
+        if (cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 4).toString().equals("X")){
+            checkProf.setSelected(true);
+        }
+        checkProf.setEnabled(true);
         checkAlu = new JCheckBox("Alumno");
+        if (cp.getVentanaPrincipal().getModelo().getValueAt(filaSelec, 5).toString().equals("X")){
+            checkAlu.setSelected(true);
+        }
         panelCheck = new JPanel(new BorderLayout());
         panelCheck.add(checkProf, BorderLayout.NORTH);
         panelCheck.add(checkAlu, BorderLayout.SOUTH);
